@@ -10,7 +10,7 @@ ARG VARNISH_VERSION=6.3
 
 
 # "php" stage
-# storm1er/ryzen-controller-team:preset-api-php:1.0.0
+# storm1er/ryzen-controller-team:preset-api-php-1.0.3
 FROM php:${PHP_VERSION}-fpm-alpine AS api_platform_php
 
 # persistent / runtime deps
@@ -122,7 +122,7 @@ CMD ["php-fpm"]
 
 # "nginx" stage
 # depends on the "php" stage above
-# storm1er/ryzen-controller-team:preset-api-nginx:1.0.0
+# storm1er/ryzen-controller-team:preset-api-nginx-1.0.3
 FROM nginx:${NGINX_VERSION}-alpine AS api_platform_nginx
 
 COPY docker/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
@@ -134,9 +134,9 @@ COPY --from=api_platform_php /srv/api/public ./
 
 # "varnish" stage
 # does not depend on any of the above stages, but placed here to keep everything in one Dockerfile
-# storm1er/ryzen-controller-team:preset-api-varnish:1.0.0
+# storm1er/ryzen-controller-team:preset-api-varnish-1.0.3
 FROM varnish:${VARNISH_VERSION} AS api_platform_varnish
 
 COPY docker/varnish/conf/default.vcl /etc/varnish/default.vcl
 
-CMD ["varnishd", "-F", "-f", "/etc/varnish/default.vcl", "-p", "http_resp_hdr_len=65536", "-p", "http_resp_size=98304"]
+CMD ["varnishd", "-F", "-f", "/etc/varnish/default.vcl", "-p", "http_max_hdr=128", "-p", "http_resp_hdr_len=165536", "-p", "http_resp_size=196608", "-p", "workspace_backend=393216"]
