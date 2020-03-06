@@ -1,0 +1,12 @@
+livenessProbe:
+  path: "/"
+  initialDelaySeconds: 30
+  timeoutSeconds: 30
+  scheme: "HTTP"
+  probeType: "httpGet"
+readinessProbe:
+  path: "/"
+  initialDelaySeconds: 15
+  timeoutSeconds: 10
+  scheme: "HTTP"
+  probeType: "httpGet"
