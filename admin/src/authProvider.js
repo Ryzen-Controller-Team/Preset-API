@@ -2,7 +2,15 @@ import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK, AUTH_GET_PERMISSIONS }
 import jwt_decode from 'jwt-decode';
 
 // Change this to be your own login check route.
-const entrypoint = process.env.REACT_APP_API_ENTRYPOINT;
+
+let reflectedEntrypoint = false;
+if (window.location.host === "staging-admin.ryzencontroller.com") {
+  reflectedEntrypoint = "https://staging-api.ryzencontroller.com";
+}
+if (window.location.host === "admin.ryzencontroller.com") {
+  reflectedEntrypoint = "https://api.ryzencontroller.com";
+}
+const entrypoint = reflectedEntrypoint ? reflectedEntrypoint : process.env.REACT_APP_API_ENTRYPOINT;
 const login_uri = entrypoint + '/authentication_token';
 
 export default (type, params) => {
