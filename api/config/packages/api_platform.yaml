@@ -1,5 +1,5 @@
 api_platform:
-    title: Hello API Platform
+    title: Ryzen Controller Preset API
     version: 1.0.0
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
@@ -7,6 +7,16 @@ api_platform:
         json: ['application/merge-patch+json']
     swagger:
         versions: [3]
+        api_keys:
+            apiKey:
+                name: Authorization
+                type: header
     # Mercure integration, remove if unwanted
     mercure:
         hub_url: '%env(MERCURE_SUBSCRIBE_URL)%'
+    formats:
+        jsonld:   ['application/ld+json']
+        json:     ['application/json']
+        csv:      ['text/csv']
+        html:     ['text/html']
+        graphql:  ['application/graphql']

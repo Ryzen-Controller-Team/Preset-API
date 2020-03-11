@@ -4,13 +4,12 @@
 
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG PHP_VERSION=7.3
+ARG PHP_VERSION=7.4
 ARG NGINX_VERSION=1.17
 ARG VARNISH_VERSION=6.3
 
 
 # "php" stage
-# storm1er/ryzen-controller-team:preset-api-php-1.0.3
 FROM php:${PHP_VERSION}-fpm-alpine AS api_platform_php
 
 # persistent / runtime deps
@@ -32,7 +31,7 @@ RUN set -eux; \
 		zlib-dev \
 	; \
 	\
-	docker-php-ext-configure zip --with-libzip; \
+	docker-php-ext-configure zip; \
 	docker-php-ext-install -j$(nproc) \
 		intl \
 		pdo_pgsql \
@@ -57,7 +56,7 @@ RUN set -eux; \
 	\
 	apk del .build-deps
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:1.9.1 /usr/bin/composer /usr/bin/composer
 
 RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 COPY docker/php/conf.d/api-platform.prod.ini $PHP_INI_DIR/conf.d/api-platform.ini
@@ -122,7 +121,6 @@ CMD ["php-fpm"]
 
 # "nginx" stage
 # depends on the "php" stage above
-# storm1er/ryzen-controller-team:preset-api-nginx-1.0.3
 FROM nginx:${NGINX_VERSION}-alpine AS api_platform_nginx
 
 COPY docker/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
@@ -134,9 +132,8 @@ COPY --from=api_platform_php /srv/api/public ./
 
 # "varnish" stage
 # does not depend on any of the above stages, but placed here to keep everything in one Dockerfile
-# storm1er/ryzen-controller-team:preset-api-varnish-1.0.3
 FROM varnish:${VARNISH_VERSION} AS api_platform_varnish
 
 COPY docker/varnish/conf/default.vcl /etc/varnish/default.vcl
 
-CMD ["varnishd", "-F", "-f", "/etc/varnish/default.vcl", "-p", "http_max_hdr=128", "-p", "http_resp_hdr_len=165536", "-p", "http_resp_size=196608", "-p", "workspace_backend=393216"]
+CMD ["varnishd", "-F", "-f", "/etc/varnish/default.vcl", "-p", "http_resp_hdr_len=65536", "-p", "http_resp_size=98304"]

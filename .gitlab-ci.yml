@@ -1,0 +1,24 @@
+include:
+  - template: Auto-DevOps.gitlab-ci.yml
+
+preset-admin-deploy:
+  image: ubuntu
+  stage: build
+  only:
+    refs:
+      - master
+    kubernetes: active
+  before_script:
+    - apt-get update -y
+    - 'which git || ( apt-get install git -y )'
+    - 'which ssh-agent || ( apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - cat "$PRESET_ADMIN_DEPLOY_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan gitlab.com | tee -a ~/.ssh/known_hosts
+  script:
+    - git subtree split --prefix admin -b preset-admin
+    - git checkout preset-admin
+    - git remote add admin git@gitlab.com:ryzen-controller-team/preset-admin.git
+    - git push admin HEAD:master --force

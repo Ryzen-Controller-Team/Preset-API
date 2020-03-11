@@ -9,12 +9,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
- *  collectionOperations={"get", "post"={
- *    "denormalization_context"={"groups"={"write"}}
- *  }},
- *  itemOperations={"get", "patch"={
- *    "denormalization_context"={"groups"={"patch"}}
- *  }}
+ *   collectionOperations={
+ *     "get",
+ *     "post"={
+ *       "denormalization_context"={"groups"={"write"}}
+ *     }
+ *   },
+ *   itemOperations={
+ *     "get",
+ *     "patch"={
+ *       "denormalization_context"={"groups"={"patch"}}
+ *     },
+ *     "delete"={"security"="is_granted('ROLE_USER')"},
+ *     "put"={"security"="is_granted('ROLE_USER')"}
+ *   }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\PresetRepository")
  */
