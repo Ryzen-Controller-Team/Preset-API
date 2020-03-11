@@ -65,8 +65,6 @@ services:
     entrypoint: /usr/local/bin/yarn
 
   admin:
-    environment:
-      REACT_APP_API_ENTRYPOINT: https://api.ryzencontroller.localhost
     build:
       context: ./admin
       target: api_platform_admin_development

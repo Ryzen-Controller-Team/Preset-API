@@ -1,6 +1,6 @@
 {
-  "short_name": "API Platform Admin",
-  "name": "Admin",
+  "short_name": "RC Admin",
+  "name": "Ryzen Controller Preset API Admin",
   "icons": [
     {
       "src": "favicon.ico",
