@@ -22,3 +22,4 @@ preset-admin-deploy:
     - git checkout preset-admin
     - git remote add admin git@gitlab.com:ryzen-controller-team/preset-admin.git
     - git push admin HEAD:master --force
+    - echo "You should take a look at https://gitlab.com/ryzen-controller-team/preset-admin/pipelines/latest"
