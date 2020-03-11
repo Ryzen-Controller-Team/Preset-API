@@ -27,7 +27,9 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 	done
 
 	if [ "$APP_ENV" != 'prod' ]; then
-		bin/console doctrine:schema:create
+		bin/console doctrine:schema:create && \
+		bin/console app:create-user admin admin@admin.admin admin && \
+		chmod 777 var/data.db
 	fi
 
 	if [ "$APP_ENV" = 'prod' ]; then

@@ -1,3 +1,9 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+graphiql:
+    path: /graphiql
+    controller: api_platform.graphql.action.graphiql
+authentication_token:
+    path: /authentication_token
+    methods: ['POST']

@@ -4,10 +4,17 @@
 
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG PHP_VERSION=7.3
+ARG PHP_VERSION=7.4
 ARG NGINX_VERSION=1.17
 ARG VARNISH_VERSION=6.3
+ARG NODE_VERSION=13
 
+
+FROM node:${NODE_VERSION}-alpine AS api_platform_asset
+
+COPY api/ api/
+WORKDIR api/
+RUN yarn && yarn encore production
 
 # "php" stage
 # storm1er/ryzen-controller-team:preset-api-php-1.0.3
@@ -32,7 +39,7 @@ RUN set -eux; \
 		zlib-dev \
 	; \
 	\
-	docker-php-ext-configure zip --with-libzip; \
+	docker-php-ext-configure zip; \
 	docker-php-ext-install -j$(nproc) \
 		intl \
 		pdo_pgsql \
@@ -92,20 +99,24 @@ RUN set -eux; \
 
 # do not use .env files in production
 COPY api/.env ./
-RUN composer dump-env prod; \
-	rm .env
 
 # copy only specifically what we need
 COPY api/bin bin/
 COPY api/config config/
-COPY api/public public/
+COPY --from=api_platform_asset /api/public public/
 COPY api/src src/
+
+RUN bin/create-jwt-keys; sync; \
+	composer dump-env prod; \
+	rm .env
 
 RUN set -eux; \
 	mkdir -p var/cache var/log; \
 	composer dump-autoload --classmap-authoritative --no-dev; \
 	composer run-script --no-dev post-install-cmd; \
-	chmod +x bin/console; sync
+	chmod +x bin/console; sync; \
+	chmod o+r config/jwt/private.pem; \
+	chmod o+r config/jwt/public.pem;
 VOLUME /srv/api/var
 
 COPY api/docker/php/docker-healthcheck.sh /usr/local/bin/docker-healthcheck

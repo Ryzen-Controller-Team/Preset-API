@@ -25,9 +25,7 @@ RUN set -eux; \
 
 COPY . ./
 
-VOLUME /usr/src/admin/node_modules
-
-ENV HTTPS true
+ENV HTTPS false
 
 CMD ["yarn", "start"]
 

@@ -1,0 +1,31 @@
+## Static configuration
+global:
+  sendAnonymousUsage: false
+
+log:
+  # If something goes wrong, changing this to `DEBUG` might help you finding out what happens.
+  # DEBUG, INFO, WARN, ERROR, FATAL, PANIC
+  level: "INFO"
+
+entryPoints:
+  http:
+    address: ":80"
+  https:
+    address: ":443"
+  ws:
+    address: ":9222"
+
+api:
+  insecure: true
+  dashboard: true
+
+providers:
+  # This is how you tell traefik that it has to get the dynamic config from a config file
+  # Note that the path is the path to the file inside Docker, not insider your machine!
+  # If you want do use Docker itself for this check traefik docs!
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+  file:
+    filename: "/etc/traefik/traefik.dynamic.yml"
+    watch: true
