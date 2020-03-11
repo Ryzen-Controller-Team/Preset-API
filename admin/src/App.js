@@ -8,7 +8,15 @@ import {
 import parseHydraDocumentation from "@api-platform/api-doc-parser/lib/hydra/parseHydraDocumentation";
 import authProvider from "./authProvider.js";
 
-const entrypoint = process.env.REACT_APP_API_ENTRYPOINT;
+let reflectedEntrypoint = false;
+if (window.location.host === "staging-admin.ryzencontroller.com") {
+  reflectedEntrypoint = "https://staging-api.ryzencontroller.com";
+}
+if (window.location.host === "admin.ryzencontroller.com") {
+  reflectedEntrypoint = "https://api.ryzencontroller.com";
+}
+const entrypoint = reflectedEntrypoint ? reflectedEntrypoint : process.env.REACT_APP_API_ENTRYPOINT;
+
 const fetchHeaders = {
   Authorization: `Bearer ${window.localStorage.getItem("token")}`
 };
