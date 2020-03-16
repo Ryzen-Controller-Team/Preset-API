@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200316134150 extends AbstractMigration
+final class Version20200316163522 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,8 +22,8 @@ final class Version20200316134150 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SEQUENCE preset_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE TABLE preset (id INT NOT NULL, system_hash VARCHAR(255) NOT NULL, upvote INT NOT NULL, downvote INT NOT NULL, name VARCHAR(255) NOT NULL, ryzen_adj_arguments JSON NOT NULL, permissive_system_hash VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('ALTER TABLE preset ADD permissive_system_hash VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE preset ADD description TEXT DEFAULT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -32,7 +32,7 @@ final class Version20200316134150 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE SCHEMA public');
-        $this->addSql('DROP SEQUENCE preset_id_seq CASCADE');
-        $this->addSql('DROP TABLE preset');
+        $this->addSql('ALTER TABLE preset DROP permissive_system_hash');
+        $this->addSql('ALTER TABLE preset DROP description');
     }
 }
