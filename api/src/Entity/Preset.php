@@ -67,6 +67,18 @@ class Preset
      */
     private $ryzenAdjArguments = [];
 
+    /**
+     * @Groups("write")
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $permissiveSystemHash;
+
+    /**
+     * @Groups("write")
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -128,6 +140,30 @@ class Preset
     public function setRyzenAdjArguments(array $ryzenAdjArguments): self
     {
         $this->ryzenAdjArguments = $ryzenAdjArguments;
+
+        return $this;
+    }
+
+    public function getPermissiveSystemHash(): ?string
+    {
+        return $this->permissiveSystemHash;
+    }
+
+    public function setPermissiveSystemHash(?string $permissiveSystemHash): self
+    {
+        $this->permissiveSystemHash = $permissiveSystemHash;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
