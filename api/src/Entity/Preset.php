@@ -9,6 +9,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
+ *   attributes={
+ *     "pagination_enabled"=false,
+ *     "pagination_client_enabled"=true
+ *   },
  *   collectionOperations={
  *     "get",
  *     "post"={
